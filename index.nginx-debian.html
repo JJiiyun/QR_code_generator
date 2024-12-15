@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 코드 생성</title>
+    <style>
+        body 
+        {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #qrCode {
+            margin-top: 20px;
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+       
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR 코드 생성기</h1>
+        <div class="input-container">
+            <input type="text" id="url" placeholder="QR 코드로 변환할 URL을 입력하세요" value="http://naver.com">
+            <button id="generateButton">QR 코드 생성</button>
+            <div class="alert" id="errorAlert">URL을 입력해주세요.</div>
+            <div class="success" id="successAlert">QR 코드가 성공적으로 생성되었습니다!</div>
+        </div>
+        <img id="qrCode" alt="QR 코드가 여기 나타납니다"/>
+    </div>
+
+    <script>
+        document.getElementById('generateButton').addEventListener('click', function() {
+            const url = document.getElementById('url').value.trim();
+            const errorAlert = document.getElementById('errorAlert');
+            const successAlert = document.getElementById('successAlert');
+            const qrCodeImg = document.getElementById('qrCode');
+
+            // 입력값이 없으면 에러 메시지 표시
+            if (!url) {
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+                qrCodeImg.style.display = 'none';
+                return;
+            }
+
+            errorAlert.style.display = 'none';
+
+            // API 호출 URL 설정
+            const apiUrl = `https://{ㅇㅇㅇ.ap-northeast-2.amazonaws.com}/qr-qr/qr-generator?url=${encodeURIComponent(url)}`;
+
+            // API 요청
+            fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.qr_code) {
+                    qrCodeImg.src = `data:image/png;base64,${data.qr_code}`;
+                    qrCodeImg.style.display = 'block';
+                    successAlert.style.display = 'block';
+                } else {
+                    errorAlert.textContent = 'QR 코드 생성 실패. 다시 시도해주세요.';
+                    errorAlert.style.display = 'block';
+                    successAlert.style.display = 'none';
+                }
+            })
+            .catch(error => {
+                console.error('API 호출 오류:', error);
+                errorAlert.textContent = 'API 호출 중 오류가 발생했습니다.';
+                errorAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
