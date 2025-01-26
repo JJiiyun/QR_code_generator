@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR generator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #2d3436;
+            --primary-color: #6c5ce7;
+            --secondary-color: #ffffff;
+            --accent-color: #a8a4e6;
+            --error-color: #ff7675;
+            --success-color: #55efc4;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #2d3436;
+            --text-color: #dfe6e9;
+            --primary-color: #a66efa;
+            --secondary-color: #3b4144;
+            --accent-color: #7c6cf0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .title {
+            font-size: 2.8rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 2rem;
+            cursor: pointer;
+            font-size: 1.8rem;
+            background: var(--secondary-color);
+            padding: 0.8rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .control-panel {
+            background: var(--secondary-color);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+
+        .input-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        input, select {
+            padding: 1.2rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--accent-color);
+        }
+
+        .result-section {
+            display: none;
+            background: var(--secondary-color);
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .history-section {
+            margin-top: 3rem;
+            background: var(--secondary-color);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .history-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: background 0.3s;
+        }
+
+        .history-item:hover {
+            background: rgba(0,0,0,0.03);
+        }
+
+        .history-qr {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 2px solid var(--primary-color);
+        }
+
+        .history-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .history-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .history-url {
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .history-actions {
+            display: flex;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .history-actions button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 0.8rem;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .history-actions button:hover {
+            background: rgba(0,0,0,0.05);
+        }
+
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin: 3rem 0;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--primary-color);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">QR코드 생성기</h1>
+            <div class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-magic"></i>
+            </div>
+        </div>
+
+        <div class="control-panel">
+            <div class="input-group">
+                <input type="text" id="title" placeholder="QR 코드 이름" required>
+                <input type="url" id="url" placeholder="https://example.com" required>
+                <select id="size">
+                    <option value="300">기본 크기</option>
+                    <option value="450">큰 사이즈</option>
+                    <option value="600">고화질</option>
+                </select>
+            </div>
+            <button class="generate-btn" onclick="generateQR()">
+                <i class="fas fa-qrcode"></i> 생성하기
+            </button>
+        </div>
+
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>QR 코드 생성 중...</p>
+        </div>
+
+        <div class="result-section" id="resultSection">
+            <!-- 결과 내용 -->
+        </div>
+
+        <div class="history-section">
+            <h3 style="padding: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.1);">생성 기록</h3>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentTheme = 'light';
+        let generatedQR = null;
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            document.querySelector('.theme-toggle i').className = 
+                currentTheme === 'light' ? 'fas fa-magic' : 'fas fa-sun';
+        }
+
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+
+        async function generateQR() {
+            const title = document.getElementById('title').value.trim();
+            const url = document.getElementById('url').value;
+            const size = document.getElementById('size').value;
+            const loading = document.querySelector('.loading');
+
+            if (!title) {
+                alert('QR 코드 이름을 입력해주세요!');
+                return;
+            }
+
+            if (!isValidUrl(url)) {
+                alert('유효한 URL을 입력해주세요!');
+                return;
+            }
+
+            loading.style.display = 'flex';
+
+            try {
+                const response = await fetch(`http://localhost:5001/generate-qr?url=${encodeURIComponent(url)}&size=${size}`);
+                const data = await response.json();
+
+                if (data.qr_code) {
+                    addToHistory(title, url, data.qr_code);
+                    document.getElementById('title').value = '';
+                    document.getElementById('url').value = '';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('QR 생성 실패!');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function addToHistory(title, url, qrCode) {
+            const historyList = document.getElementById('historyList');
+            
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            historyItem.innerHTML = `
+                <div class="history-qr">
+                    <img src="data:image/png;base64,${qrCode}" alt="${title}">
+                </div>
+                <div class="history-info">
+                    <div class="history-title">${title}</div>
+                    <div class="history-url">${url}</div>
+                </div>
+                <div class="history-actions">
+                    <button onclick="downloadQR('${qrCode}', '${title}')">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button onclick="this.closest('.history-item').remove()">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+
+            historyList.prepend(historyItem);
+        }
+
+        function downloadQR(qrCode, title) {
+            const link = document.createElement('a');
+            link.href = `data:image/png;base64,${qrCode}`;
+            link.download = `${title}_QR.png`;
+            link.click();
+        }
+    </script>
+</body>
+</html>
