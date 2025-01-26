@@ -1,4 +1,4 @@
-# QR 코드 생성기 프로젝트
+# QR 코드 생성기 프로젝트 (2024.12)
 
 ## 📌 프로젝트 개요
 기존 '클라우드컴퓨팅' 강의 기말 프로젝트로 구현한 [간단한 QR code Generator](https://github.com/JJiiyun/QR_code_generator/tree/main/previous_project) 에서 더 나아가, \
