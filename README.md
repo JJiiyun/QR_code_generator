@@ -1,8 +1,7 @@
 # QR 코드 생성기 프로젝트
 
 ## 📌 프로젝트 개요
-기존 클라우드 컴퓨팅 과목의 프로젝트로 구현한 간단한 웹 애플리케이션을 보완하였습니다.
-URL과 사용자 지정 제목을 기반으로 고품질 QR 코드를 생성하는 웹 애플리케이션입니다. 생성 기록 관리와 다양한 내보내기 기능을 제공합니다.
+기존 클라우드 컴퓨팅 과목의 프로젝트로 구현한 간단한 웹 애플리케이션에서 더 나아가 URL과 사용자 지정 제목을 기반으로 고품질 QR 코드를 생성하도록 생성 기록 관리와 다양한 내보내기 기능을 제공합니다.
 
 <img width="1488" alt="image" src="https://github.com/user-attachments/assets/eab685b0-e513-4c5e-8d50-467eaf572b2f" />
 <img width="1483" alt="image" src="https://github.com/user-attachments/assets/630c331d-4179-4354-a4da-52ea06b1a820" />
