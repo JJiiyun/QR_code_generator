@@ -1,7 +1,7 @@
 # QR 코드 생성기 프로젝트 (2024.12)
 
 ## 📌 프로젝트 개요
-기존 '클라우드컴퓨팅' 강의 기말 프로젝트로 구현한 [간단한 QR code Generator](https://github.com/JJiiyun/QR_code_generator/tree/main/previous_project) 에서 더 나아가, \
+기존 '클라우드컴퓨팅' 강의 기말 프로젝트로 구현한 [AWS를 활용한 간단한 QR code Generator](https://github.com/JJiiyun/QR_code_generator/tree/main/previous_project) 에서 더 나아가, \
 URL과 사용자 지정 제목을 기반으로 고품질 QR 코드를 생성하도록 생성 기록 관리와 다양한 내보내기 기능을 제공합니다.
 
 <img width="1488" alt="image" src="https://github.com/user-attachments/assets/eab685b0-e513-4c5e-8d50-467eaf572b2f" />
