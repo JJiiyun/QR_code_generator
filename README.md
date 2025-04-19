@@ -35,6 +35,8 @@ URL과 사용자 지정 제목을 기반으로 고품질 QR 코드를 생성하�
 ## 🛠 기술 스택
 **Backend**  
 `Python 3.10` | `Flask 2.3` | `qrcode 7.4` | `Pillow 10.0`
+<img width="1392" alt="image" src="https://github.com/user-attachments/assets/39a68cfa-dbc3-43dd-a6dd-ad306862eacf" />
+
 
 **Frontend**  
 `HTML5` | `CSS3 Grid/Flex` | `Vanilla JS`  
